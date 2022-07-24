@@ -1,0 +1,170 @@
+<html>
+
+<head>
+  <script>
+
+    function make(response) {
+      var result = Object.keys(response).map((key) => [response[key]]);
+      let table = document.createElement('table');
+      table.id = "dataTable";
+      table.className = "table table-striped table-hover table-bordered";
+      let th = document.createElement('thead');
+      let tb = document.createElement('tbody');
+      table.appendChild(th);
+      table.appendChild(tb);
+      document.getElementById('tab').innerHTML = '';
+      document.getElementById('tab').append(table);
+      let tr, td;
+      result.forEach((e) => {
+        tr = document.createElement('tr');
+
+        td = document.createElement('td');
+        var input = document.createElement("input");
+        input.type = "text";
+        input.value = e[0]['fName'];
+        input.id = "fn" + e[0]['_id'];
+        td.appendChild(input);
+        tr.appendChild(td);
+
+        //input2
+        let td1 = document.createElement('td');
+        let input2 = document.createElement("input");
+        input2.type = "text";
+        input2.value = e[0]['lName'];
+        input2.id = "ln" + e[0]['_id'];
+        td1.appendChild(input2);
+        tr.appendChild(td1);
+
+        //btn1
+        let btn = document.createElement("BUTTON");
+        let t = document.createTextNode("update");
+        btn.appendChild(t);
+        btn.setAttribute("onclick", "updateUser(`${this.value}`)");
+        // let fn = document.getElementById('fName').value;
+        // let ln = document.getElementById('lName').value;
+        btn.setAttribute("value", e[0]['_id']);
+        btn.classList = "btn btn-success";
+        let td3 = document.createElement('td');
+        td3.appendChild(btn);
+        tr.appendChild(td3);
+
+        //btn2
+        let btn2 = document.createElement("BUTTON");
+        let t2 = document.createTextNode("delete");
+        btn2.appendChild(t2);
+        btn2.setAttribute("value", e[0]['_id']);
+        btn2.classList = "btn btn-danger";
+        btn2.setAttribute("onclick", "delUser(`${this.value}`)");
+        let td4 = document.createElement('td');
+        td4.appendChild(btn2);
+        tr.appendChild(td4);
+        tb.appendChild(tr);
+
+      });
+    }
+
+    async function getUsers() {
+      const response = await fetch('http://localhost:8080/users', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data1 = await response.json();
+      make(data1);
+    }
+
+
+    async function updateUser(id) {
+      let fn = document.getElementById("fn" + id).value.trim();
+      let ln = document.getElementById("ln" + id).value.trim();
+      if (fn && ln) {
+        const insertData = { '_id': id, "fName": fn, "lName": ln };
+        const response = await fetch('http://localhost:8080/', {
+          method: 'PUT',
+          body: JSON.stringify(insertData),
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data1 = await response.json();
+        make(data1);
+
+      }
+      else {
+        alert("Please insert data");
+        return;
+      }
+
+    }
+
+    async function delUser(value) {
+      const deleteData = { '_id': value };
+      const response = await fetch('http://localhost:8080/', {
+        method: 'DELETE',
+        body: JSON.stringify(deleteData),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data1 = await response.json();
+      make(data1);
+    }
+
+    async function addData() {
+      let fname = document.getElementById('fname').value.trim();
+      let lname = document.getElementById('lname').value.trim();
+      const data = { 'fName': fname, 'lName': lname };
+      if (fname && lname) {
+        const response = await fetch('http://localhost:8080/', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' },
+        });
+        const data1 = await response.json();
+        make(data1);
+      }
+      else {
+        alert("Please fetch value");
+      }
+    }
+
+    async function renderData() {
+      const response = await fetch('http://localhost:8080/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const myJson = await response.json();
+      console.log(myJson['fname'] + myJson['lname']);
+      document.getElementById('fname').value = myJson['fname'];
+      document.getElementById('lname').value = myJson['lname'];
+    }
+  </script>
+
+  <style>
+    * {
+      text-align: center;
+      margin: 80px;
+    }
+
+    table {
+      text-align: center;
+    }
+
+    table tr td {
+      border-style: none;
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+
+  <input type="text" id="fname">
+  <input type="text" id="lname">
+  </br></br>
+  <button class="btn btn-danger" onclick="addData()">Add data</button>
+  <button class="btn btn-info" onclick="renderData()">Fetch data</button>
+  <button class="btn btn-dark" onclick="getUsers()">Render data</button>
+
+  <br /><br /><br />
+  <div id="tab"></div>
+
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "nodee1",
+  "version": "1.0.0",
+  "description": "Crud application in node,rest api and mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "chirag panchal",
+  "license": "ISC"
+}
