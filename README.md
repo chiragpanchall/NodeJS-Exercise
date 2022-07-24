@@ -1,2 +1,7 @@
 # NodeJS Exercise
  
+**Here i have three NodeJS Exercise **
+
+* MongoDB CRUD operation
+* Basic File Operation with API
+* Social Authentication of Google, Facebook, Github using passport.js and JWT token
